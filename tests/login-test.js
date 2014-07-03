@@ -1,4 +1,4 @@
-		  Actions.navigate(null, "http://local." + params.resort + ".com/home1")
+Actions.navigate(null, "http://local.vail.com/home1")
 			.then(function(tab){
 				return Actions.waitUntilElement(tab, ".global-nav-input.username", 1000);
 			})

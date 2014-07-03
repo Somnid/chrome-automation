@@ -3,10 +3,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	btnGo.addEventListener("click", function(){
 		TestRunner.runTests([
 		  { 
-		    file : "tests/login-test.js", 
-		    params : { 
-		      resort : "vail" 
-		    }
+		    file : "tests/search-lift-tickets-test.js"
 		  }
 		]);
 	});
