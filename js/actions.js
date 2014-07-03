@@ -20,11 +20,11 @@ var Actions = (function(){
 		return new Promise(function(resolve, reject){
 			if(tab){
 				chrome.tabs.update(tab.id, { url : url }, function(tab){
-					resolve(tab);
+					resolve({tab : tab});
 				});
 			}else{
 				chrome.tabs.update({ url : url }, function(tab){
-					resolve(tab);
+					resolve({tab : tab});
 				});
 			}
 		});
@@ -40,7 +40,7 @@ var Actions = (function(){
 	
 	function clickElement(tab, elementQuery){
 		return new Promise(function(resolve, reject){
-			var code = "document.querySelector('" + elementQuery + "').click()";
+			var code = "document.querySelector(\"" + elementQuery + "\").click()";
 			chrome.tabs.executeScript(tab.id, { code : code }, function(result){
 				resolve({ tab : tab, result : result});
 			});
@@ -69,7 +69,7 @@ var Actions = (function(){
 	
 	function updateValue(tab, elementQuery, value){
 		return new Promise(function(resolve, reject){
-			var code = "document.querySelector('" + elementQuery + "').value = '" + value + "'";
+			var code = "document.querySelector(\"" + elementQuery + "\").value = \"" + value + "\"";
 			chrome.tabs.executeScript(tab.id, { code : code }, function(result){
 				resolve({ tab : tab, result : result});
 			});
