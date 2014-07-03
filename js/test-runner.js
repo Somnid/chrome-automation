@@ -3,7 +3,7 @@ var TestRunner = (function(){
     arrayOfTests.forEach(function(test){
       var filePath = chrome.extension.getURL(test.file);
       Ajax.promiseRequest({ url : filePath }).then(function(contents){
-        var func = new Function("params", contents);
+        util.appendScript(contents);
         func(test.params);
       })
     });
