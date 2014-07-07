@@ -1,10 +1,12 @@
 document.addEventListener("DOMContentLoaded", function(){
-	var btnGo = document.getElementById("go");
-	btnGo.addEventListener("click", function(){
-		TestRunner.runTests([
-		  { 
-		    file : "tests/search-lift-tickets-test.js"
-		  }
-		]);
-	});
+	var btnCurrent = document.getElementById("current");
+	
+	var configPath = chrome.extension.getURL("/config/test-config.json");
+	Ajax.promiseRequest({ url : configPath }).then(function(content){
+	  var testConfig = JSON.parse(content);
+	  
+	  btnCurrent.addEventListener("click", function(){
+		  TestRunner.runTests(testConfig);
+	  });
+	})
 });
