@@ -76,6 +76,32 @@ var Actions = (function(){
 		});
 	}
 	
+	function hasValue(tab, elementQuery, value){
+		return new Promise(function(resolve, reject){
+			var code = "document.querySelector(\"" + elementQuery + "\").value == \"" + value + "\"";
+			chrome.tabs.executeScript(tab.id, { code : code }, function(result){
+			  if(result && result[0] === true){
+				  resolve({ tab : tab, result : result});
+			  }else{
+			    reject("Element " + elementQuery + " did not contain value: " + value)
+			  }
+			});
+		});
+	}
+	
+	function hasText(tab, elementQuery, value){
+		return new Promise(function(resolve, reject){
+			var code = "document.querySelector(\"" + elementQuery + "\").innerText == \"" + value + "\"";
+			chrome.tabs.executeScript(tab.id, { code : code }, function(result){
+			  if(result && result[0] === true){
+				  resolve({ tab : tab, result : result});
+			  }else{
+			    reject("Element " + elementQuery + " did not contain value: " + value)
+			  }
+			});
+		});
+	}
+	
 	function printToPageConsole(tab, value){
 		return new Promise(function(resolve, reject){
 			var code = "console.log('" + value + "');";
@@ -161,6 +187,8 @@ var Actions = (function(){
 		focusElement : focusElement,
 		printToPageConsole : printToPageConsole,
 		updateValue : updateValue,
+		hasValue : hasValue,
+		hasText : hasText,
 		waitUntilUrl : waitUntilUrl,
 		waitUntilElement : waitUntilElement,
 		captureTab : captureTab,
