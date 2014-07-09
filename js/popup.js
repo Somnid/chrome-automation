@@ -5,8 +5,5 @@ document.addEventListener("DOMContentLoaded", function(){
 	Ajax.promiseRequest({ url : configPath }).then(function(content){
     var testConfig = JSON.parse(content);
     TestUiView.create({ model : testConfig });
-    btnCurrent.addEventListener("click", function(){
-      TestRunner.runTests(testConfig);
-	  });
 	});
 });

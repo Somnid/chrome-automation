@@ -1,0 +1,15 @@
+html {
+  width: 300px;
+  font-family: arial;
+}
+
+test-view {
+  border: 2px solid black; 
+  border-bottom: none;
+  display: block;
+  padding: 5px;
+  cursor: pointer;
+}
+test-view:last-child {
+  border-bottom: 2px solid black;
+}
