@@ -1,12 +1,12 @@
 document.addEventListener("DOMContentLoaded", function(){
 	var btnCurrent = document.getElementById("current");
-	
+	  
 	var configPath = chrome.extension.getURL("/config/test-config.json");
 	Ajax.promiseRequest({ url : configPath }).then(function(content){
-	  var testConfig = JSON.parse(content);
-	  
-	  btnCurrent.addEventListener("click", function(){
-		  TestRunner.runTests(testConfig);
+    var testConfig = JSON.parse(content);
+    TestUiView.create({ model : testConfig });
+    btnCurrent.addEventListener("click", function(){
+      TestRunner.runTests(testConfig);
 	  });
-	})
+	});
 });
