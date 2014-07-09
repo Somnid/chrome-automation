@@ -5,13 +5,12 @@
 		<link rel="stylesheet" href="../css/popup.css" />
 	</head>
 	<body>
-		<button id="current">Run Current</button>
-		<button id="all">Run All</button>
-		<div id="tests">
-		  
-		</div>
+		<div id="tests"></div>
+		<button id="run-all">Run All</button>
 		<template id="test-tmpl">
-		  <span class="test"></span>
+		  <div>
+		    <content></content>
+		  </div>
 		</template>
 		<script src="../js/ajax.js"></script>
 		<script src="../js/utilities.js"></script>

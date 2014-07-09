@@ -1,5 +1,11 @@
 [
   { 
+	  "file" : "tests/login-test.js"
+	},
+	{ 
+	  "file" : "tests/search-lift-tickets-test.js"
+	},
+	{ 
 	  "file" : "tests/search-lift-tickets-validation-test.js"
 	}
 ]
