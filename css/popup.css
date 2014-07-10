@@ -13,3 +13,9 @@ test-view {
 test-view:last-child {
   border-bottom: 2px solid black;
 }
+test-view.success {
+  background-color: #00cc00;
+}
+test-view.error{
+  background-color: #cc0000;
+}
