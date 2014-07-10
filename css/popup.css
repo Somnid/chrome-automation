@@ -16,6 +16,6 @@ test-view:last-child {
 test-view.success {
   background-color: #00cc00;
 }
-test-view.error{
+test-view.failure{
   background-color: #cc0000;
 }
