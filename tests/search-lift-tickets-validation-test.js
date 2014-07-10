@@ -1,4 +1,4 @@
-Actions.navigate(null, "http://local.vail.com/sf/slt")
+return Actions.navigate(null, "http://local.vail.com/sf/slt")
 .then(function(results){
   return Actions.updateValue(results.tab, "[id$='txtArrivalDate']", "12/1/2014");
 })

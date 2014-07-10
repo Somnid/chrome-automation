@@ -91,9 +91,9 @@ var Actions = (function(){
 	
 	function hasText(tab, elementQuery, value){
 		return new Promise(function(resolve, reject){
-			var code = "document.querySelector(\"" + elementQuery + "\").innerText == \"" + value + "\"";
+			var code = "document.querySelector(\"" + elementQuery + "\").innerText";
 			chrome.tabs.executeScript(tab.id, { code : code }, function(result){
-			  if(result && result[0] === true){
+			  if(result && new RegExp(value).test(result[0])){
 				  resolve({ tab : tab, result : result});
 			  }else{
 			    reject("Element " + elementQuery + " did not contain value: " + value)

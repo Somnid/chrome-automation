@@ -9,7 +9,13 @@ testViewProto.createdCallback = function(){
   shadowRoot.appendChild(clone);
   
   this.addEventListener("click", function(){
-    TestRunner.runTest(this.test);
+    this.classList.remove("success");
+    this.classList.remove("failure");
+    TestRunner.runTest(this.test).then(function(){
+      this.classList.add("success");
+    }).catch(function(){
+      this.classList.add("failure");
+    });
   }.bind(this));
 };
 
