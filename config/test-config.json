@@ -1,14 +1,18 @@
 [
   { 
-	  "file" : "tests/google-test.js"
+	  "file" : "tests/google-test.js",
+	  "isLocal" : true
 	},
   { 
-	  "file" : "tests/login-test.js"
+	  "file" : "tests/login-test.js",
+	  "isLocal" : true
 	},
 	{ 
-	  "file" : "tests/search-lift-tickets-test.js"
+	  "file" : "tests/search-lift-tickets-test.js",
+	  "isLocal" : true
 	},
 	{ 
-	  "file" : "tests/search-lift-tickets-validation-test.js"
+	  "file" : "tests/search-lift-tickets-validation-test.js",
+	  "isLocal" : true
 	}
 ]
