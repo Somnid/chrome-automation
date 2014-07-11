@@ -5,7 +5,7 @@ var TestRunner = (function(){
   function runTest(test){
     var filePath = chrome.extension.getURL(test.file);
     return Ajax.promiseRequest({ url : filePath }).then(function(fileContents){
-      var func = new Function("Actions", fileContents);
+      var func = new Function("params", "Actions", fileContents);
       return func(Actions);
     });
   }
