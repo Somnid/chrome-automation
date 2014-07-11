@@ -19,3 +19,6 @@ test-view.success {
 test-view.failure{
   background-color: #cc0000;
 }
+test-view.running{
+  background-color: #cccc00;
+}
