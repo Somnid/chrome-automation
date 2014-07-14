@@ -47,7 +47,13 @@ var TestView = (function(){
     this.classList.remove("running");
     this.classList.add("failure");
     this.dom.errorMessage = document.createElement("p");
-    this.dom.errorMessage.innerText = error.message;
+    var message = "";
+    if(typeof(error) == "string"){
+      message = error;
+    }else{
+      message = error.stack || error.message;
+    }
+    this.dom.errorMessage.innerText = message;
     this.dom.shadowRoot.appendChild(this.dom.errorMessage);
   }
   function onClick(){
