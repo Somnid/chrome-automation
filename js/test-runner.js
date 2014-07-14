@@ -9,7 +9,7 @@ var TestRunner = (function(){
     }
     return Ajax.promiseRequest({ url : filePath }).then(function(fileContents){
       var func = new Function("params", "Actions", fileContents);
-      return func(Actions);
+      return func({}, Actions);
     });
   }
   return {

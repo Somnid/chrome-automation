@@ -47,6 +47,15 @@ var Actions = (function(){
 		});
 	}
 	
+	function toggleElement(tab, elementQuery, value){
+		return new Promise(function(resolve, reject){
+			var code = "document.querySelector(\"" + elementQuery + "\").checked = " + (value ? "true" : "false");
+			chrome.tabs.executeScript(tab.id, { code : code }, function(result){
+				resolve({ tab : tab, result : result});
+			});
+		});
+	}
+	
 	function focusElement(tab, elementQuery){
 		return new Promise(function(resolve, reject){
 			var code = "document.querySelector('" + elementQuery + "').focus()";
@@ -74,6 +83,17 @@ var Actions = (function(){
 				resolve({ tab : tab, result : result});
 			});
 		});
+	}
+		
+	function fillOutForm(tab, elementValueMap){
+    return new Promise(function(resolve, reject){
+      for(var key in elementValueMap){
+        var code = "document.querySelector(\"" + elementQuery + "\").value = \"" + value + "\"";
+        chrome.tabs.executeScript(tab.id, { code : code }, function(result){
+          resolve({ tab : tab, result : result});
+        });
+      }
+    });
 	}
 	
 	function hasValue(tab, elementQuery, value){
@@ -185,6 +205,7 @@ var Actions = (function(){
 		appendScript : appendScript,
 		clickElement : clickElement,
 		focusElement : focusElement,
+		toggleElement : toggleElement,
 		printToPageConsole : printToPageConsole,
 		updateValue : updateValue,
 		hasValue : hasValue,

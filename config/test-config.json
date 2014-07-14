@@ -1,5 +1,9 @@
 [
   { 
+	  "file" : "tests/signup-test.js",
+	  "isLocal" : true
+	},
+  { 
 	  "file" : "tests/google-test.js",
 	  "isLocal" : true
 	},
@@ -13,6 +17,10 @@
 	},
 	{ 
 	  "file" : "tests/search-lift-tickets-validation-test.js",
+	  "isLocal" : true
+	},
+	{ 
+	  "file" : "tests/login-and-buy-lift-ticket-test.js",
 	  "isLocal" : true
 	}
 ]
