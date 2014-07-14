@@ -142,7 +142,7 @@ var Actions = (function(){
 					if(urlRegex.test(tab.url)){
 						resolve({ tab : tab, result : null });
 					}else if(elapsedTime > timeout){
-						reject("Exceeded timeout of " + timeout + " for url navigation: " + url);
+						reject("Exceeded timeout of " + timeout + "ms for url navigation: " + url);
 					}else{
 						setTimeout(testUrl, 500);
 					}

@@ -8,7 +8,16 @@
 	  "isLocal" : true
 	},
   { 
-	  "file" : "tests/login-test.js",
+	  "file" : "tests/page-login-test.js",
+	  "isLocal" : true
+	},
+	{ 
+	  "name" : "Create Pass Account From Login Page",
+	  "file" : "tests/page-login-new-pass-test.js",
+	  "isLocal" : true
+	},
+  { 
+	  "file" : "tests/header-login-test.js",
 	  "isLocal" : true
 	},
 	{ 

@@ -28,7 +28,7 @@ var TestUiView = (function(){
   function render(){
     this.options.model.forEach(function(test){
       var testView = document.createElement("test-view");
-      testView.innerText = test.file;
+      testView.innerText = test.name || test.file;
       testView.test = test;
       this.dom.tests.appendChild(testView)
     }.bind(this));
