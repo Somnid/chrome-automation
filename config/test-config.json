@@ -16,6 +16,11 @@
 	  "file" : "tests/page-login-new-pass-test.js",
 	  "isLocal" : true
 	},
+	{ 
+	  "name" : "Login From Checkout Flow",
+	  "file" : "tests/page-login-checkout-test.js",
+	  "isLocal" : true
+	},
   { 
 	  "file" : "tests/header-login-test.js",
 	  "isLocal" : true
