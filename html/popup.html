@@ -8,12 +8,17 @@
 		<div id="tests"></div>
 		<button id="run-all">Run All</button>
 		<template id="test-tmpl">
-		  <div>
+		  <style>
+		    .container { flex-grow: 1; }
+		  </style>
+		  <span class="title"></span>
+		  <div class="container">
 		    <content></content>
 		  </div>
 		</template>
 		<script src="../js/ajax.js"></script>
 		<script src="../js/utilities.js"></script>
+		<script src="../js/tmpl.js"></script>
 		<script src="../js/actions.js"></script>
 		<script src="../js/web-components/test-view.js"></script>
 		<script src="../js/test-ui-view.js"></script>

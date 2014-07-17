@@ -18,14 +18,17 @@ var TestView = (function(){
     element.renderShadow();
     element.gatherSelectors();
     element.attachEvents();
+    element.attachObservers();
   }
   function bind(element){
     element.renderShadow = renderShadow.bind(element);
     element.gatherSelectors = gatherSelectors.bind(element);
     element.attachEvents = attachEvents.bind(element);
+    element.attachObservers = attachObservers.bind(element);
     element.onClick = onClick.bind(element);
     element.onSuccess = onSuccess.bind(element);
     element.onFailure = onFailure.bind(element);
+    element.updateTitle = updateTitle.bind(element);
   }
   function renderShadow(){
     var template = document.getElementById("test-tmpl");
@@ -34,10 +37,13 @@ var TestView = (function(){
     this.dom.shadowRoot.appendChild(clone);
   }
   function gatherSelectors(){
-    
+    this.dom.title = this.dom.shadowRoot.querySelector(".title");
   }
   function attachEvents(){
     this.addEventListener("click", this.onClick);
+  }
+  function attachObservers(){
+    Object.observe(this.test, this.updateTitle);
   }
   function onSuccess(){
     this.classList.remove("running");
@@ -56,7 +62,9 @@ var TestView = (function(){
     this.dom.errorMessage.innerText = message;
     this.dom.shadowRoot.appendChild(this.dom.errorMessage);
   }
-  function onClick(){
+  function onClick(e){
+    e.preventDefault();
+    e.stopPropagation();
     this.classList.remove("success");
     this.classList.remove("failure");
     this.classList.add("running");
@@ -66,6 +74,9 @@ var TestView = (function(){
     TestRunner.runTest(this.test)
       .then(this.onSuccess)
       .catch(this.onFailure);
+  }
+  function updateTitle(value){
+    this.dom.title.innerText = value;
   }
   return {
     create : create
