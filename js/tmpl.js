@@ -1,13 +1,13 @@
 var Tmpl = (function(){
  
-    function tmpl(el, bindings, data){
-        var docfrag = document.importNode(el.content, true);
+    function tmpl(templateElement, bindings, data){
+        var docfrag = document.importNode(templateElement.content, true);
         Object.observe(data, dataChanged.bind({
             el : docfrag,
             bindings : bindings
         }));
         for(var key in bindings){
-            docfrag.querySelector(key).innerText = data[bindings[key]];
+            docfrag.querySelector(key).innerText = traverseObjectProps(data, bindings[key]);
         }
         return docfrag;
     }
@@ -23,6 +23,17 @@ var Tmpl = (function(){
                 this.el.querySelector(key).innerText = newValue;
             }
         }
+    }
+    
+    function traverseObjectProps(obj, accessor){
+      var keys = accessor.split(".");
+      var prop = obj;
+      for(var i = 0; i < keys.length; i++){
+        if(keys[i]){
+          prop = obj[keys[i]];
+        }
+      }
+      return prop;
     }
  
     return {
