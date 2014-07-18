@@ -30,7 +30,7 @@ var TestView = (function(){
   }
   function renderShadow(){
     var template = document.getElementById("test-tmpl");
-    var tmpl = Tmpl.tmpl(template, { ".title" : ".title" }, this);
+    var tmpl = Tmpl.tmpl(template, { ".title" : "test.name" }, this);
     this.dom.shadowRoot = this.createShadowRoot();
     this.dom.shadowRoot.appendChild(tmpl);
   }
