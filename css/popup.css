@@ -2,7 +2,6 @@ html {
   width: 300px;
   font-family: arial;
 }
-
 test-view {
   border: 2px solid black; 
   border-bottom: none;
@@ -20,14 +19,14 @@ test-view > test-view {
   border-right: none;
   flex-grow: 1;
 }
+test-view > test-view:first-child {
+  border-top: 2px solid black;
+}
 test-view:last-child {
   border-bottom: 2px solid black;
 }
 test-view > test-view:last-child{
   border-bottom: none;
-}
-test-view > test-view:first-child{
-  border-top: none;
 }
 test-view.success {
   background-color: #00cc00;
