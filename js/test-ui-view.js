@@ -3,6 +3,7 @@ var TestUiView = (function(){
     var testUi = {};
     testUi.dom = {};
     testUi.options = options || {};
+    testUi.options.model = testUi.options.model || {};
     bind(testUi);
     testUi.init();
   }
@@ -12,6 +13,7 @@ var TestUiView = (function(){
     testUi.render = render.bind(testUi);
     testUi.getTestView = getTestView.bind(testUi);
     testUi.attachEvents = attachEvents.bind(testUi);
+    testUi.runAllClick = runAllClick.bind(testUi);
   }
   function gatherSelectors(){
     this.dom.tests = document.getElementById("tests");
@@ -22,9 +24,10 @@ var TestUiView = (function(){
     this.render();
   }
   function attachEvents(){
-    this.dom.runAll.addEventListener("click", function(e){
-      TestRunner.runTests(testConfig);
-	  });
+    this.dom.runAll.addEventListener("click", this.runAllClick);
+  }
+  function runAllClick(){
+    TestRunner.runTests(testConfig);
   }
   function render(){
     for(var i = 0; i < this.options.model.length; i++){
