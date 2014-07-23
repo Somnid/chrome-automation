@@ -3,8 +3,8 @@ html {
   font-family: arial;
 }
 test-view {
-  border: 2px solid black; 
-  border-bottom: none;
+  border: 2px solid black;
+  border-radius: 5px;
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
@@ -12,20 +12,8 @@ test-view {
   cursor: pointer;
   word-break: break-word;
   min-height: 30px;
-}
-test-view > test-view {
-  border-left: 2px solid black;
-  border-right: none;
-  flex-grow: 1;
-}
-test-view:last-child {
-  border-bottom: 2px solid black;
-}
-test-view > test-view:first-child{
-  border-top: none;
-}
-test-view > test-view:last-child{
-  border-bottom: none;
+  margin-bottom: 5px;
+  padding-left: 5px;
 }
 test-view.success {
   background-color: #00cc00;
@@ -36,10 +24,12 @@ test-view.failure{
 test-view.running{
   background-color: #cccc00;
 }
-test-view::shadow .container {
-  margin-left: 5px;
-  flex-grow: 1; 
+test-group-view {
+  display: flex;
+  margin-top: 5px;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
 }
-test-view::shadow .title { 
-  flex-basis: 100%;
+#tests {
+  max-height: 500px;
 }
