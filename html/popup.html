@@ -7,11 +7,13 @@
 	<body>
 		<div id="tests"></div>
 		<button id="run-all">Run All</button>
-		<template id="test-tmpl">
-		  <style>
-		    .container { flex-grow: 1; }
-		    .title { flex-basis: 100%; }
-		  </style>
+		<template id="test-view-tmpl">
+		  <span class="title"></span>
+		  <div class="container">
+		    <content></content>
+		  </div>
+		</template>
+		<template id="test-group-view-tmpl">
 		  <span class="title"></span>
 		  <div class="container">
 		    <content></content>
