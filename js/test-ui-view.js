@@ -11,7 +11,7 @@ var TestUiView = (function(){
     testUi.gatherSelectors = gatherSelectors.bind(testUi);
     testUi.init = init.bind(testUi);
     testUi.render = render.bind(testUi);
-    testUi.getTestView = getTestView.bind(testUi);
+    testUi.getTestElement = getTestElement.bind(testUi);
     testUi.attachEvents = attachEvents.bind(testUi);
     testUi.runAllClick = runAllClick.bind(testUi);
   }
@@ -31,20 +31,21 @@ var TestUiView = (function(){
   }
   function render(){
     for(var i = 0; i < this.options.model.length; i++){
-      var testView = this.getTestView(this.options.model[i]);
-      this.dom.tests.appendChild(testView);
+      var testElement = this.getTestElement(this.options.model[i]);
+      this.dom.tests.appendChild(testElement);
     }
   }
-  function getTestView(test){
-    var testView = document.createElement("test-view");
-    testView.test = test;
+  function getTestElement(test){
+    var testElement;
     if(test.subtests){
-      for(var i = 0; i < test.subtests.length; i++){
-        var subTestView = this.getTestView(test.subtests[i]);
-        testView.appendChild(subTestView);
-      }
+      testElement = document.createElement("test-group-view");
+      testElement.groupName = test.name;
+      testElement.tests = test.subtests;
+    }else{
+      testElement = document.createElement("test-view");
+      testElement.test = test;
     }
-    return testView;
+    return testElement;
   }
   return {
     create : create

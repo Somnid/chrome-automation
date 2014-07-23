@@ -1,9 +1,5 @@
 var testViewProto = Object.create(HTMLElement.prototype);
 
-Object.defineProperty(testViewProto, "test", {
-  writable : true
-});
-
 testViewProto.createdCallback = function(){
   TestView.create(this);
 }
@@ -14,7 +10,6 @@ document.registerElement("test-view", {
 var TestView = (function(){
   function create(element){
     element.dom = {};
-    element.test = {};
     bind(element);
     element.renderShadow();
     element.gatherSelectors();
