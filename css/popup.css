@@ -32,4 +32,5 @@ test-group-view {
 }
 #tests {
   max-height: 500px;
+  overflow-y: scroll;
 }
