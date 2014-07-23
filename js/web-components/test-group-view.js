@@ -23,6 +23,8 @@ var TestGroupView = (function(){
     element.attachObservers = attachObservers.bind(element);
     element.renderTests = renderTests.bind(element);
     element.onClick = onClick.bind(element);
+    element.onFailure = onFailure.bind(element);
+    element.onSuccess = onSuccess.bind(element);
   }
   function renderShadow(){
     var template = document.getElementById("test-group-view-tmpl");
@@ -45,7 +47,35 @@ var TestGroupView = (function(){
       this.appendChild(testView);
     }
   }
+  function onSuccess(){
+    this.classList.remove("running");
+    this.classList.add("success");
+  }
+  function onFailure(error){
+    this.classList.remove("running");
+    this.classList.add("failure");
+    this.dom.errorMessage = document.createElement("p");
+    var message = "";
+    if(typeof(error) == "string"){
+      message = error;
+    }else{
+      message = error.stack || error.message;
+    }
+    this.dom.errorMessage.innerText = message;
+    this.dom.shadowRoot.appendChild(this.dom.errorMessage);
+  }
   function onClick(e){
+    e.preventDefault();
+    e.stopPropagation();
+    this.classList.remove("success");
+    this.classList.remove("failure");
+    this.classList.add("running");
+    if(this.dom.errorMessage){
+      this.dom.shadowRoot.removeChild(this.dom.errorMessage);
+    }
+    TestRunner.runTests(this.tests)
+      .then(this.onSuccess)
+      .catch(this.onError);
   }
   return {
     create : create
