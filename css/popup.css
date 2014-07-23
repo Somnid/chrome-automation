@@ -9,7 +9,6 @@ test-view {
   flex-flow: row wrap;
   justify-content: flex-start;
   align-items : center;
-  padding-left: 5px;
   cursor: pointer;
   word-break: break-word;
   min-height: 30px;
@@ -19,11 +18,11 @@ test-view > test-view {
   border-right: none;
   flex-grow: 1;
 }
-test-view > test-view:first-child {
-  border-top: 2px solid black;
-}
 test-view:last-child {
   border-bottom: 2px solid black;
+}
+test-view > test-view:first-child{
+  border-top: none;
 }
 test-view > test-view:last-child{
   border-bottom: none;
@@ -36,4 +35,11 @@ test-view.failure{
 }
 test-view.running{
   background-color: #cccc00;
+}
+test-view::shadow .container {
+  margin-left: 5px;
+  flex-grow: 1; 
+}
+test-view::shadow .title { 
+  flex-basis: 100%;
 }
