@@ -152,6 +152,15 @@ var Actions = (function(){
 		});
 	}
 	
+	function waitUntilUrlChange(tab, url, timeout){
+		timeout = timeout || 5000;
+		return new Promise(function(resolve, reject){
+			var startTime = new Date().getTime();
+			var urlRegex = new RegExp(url);
+			chrome.runtime.
+		});
+	}
+	
 	function waitUntilElement(tab, elementSelector, timeout){
 		timeout = timeout || 5000;
 		return new Promise(function(resolve, reject){
