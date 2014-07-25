@@ -18,20 +18,23 @@ test-view {
   min-height: 30px;
   margin-bottom: 5px;
   padding-left: 5px;
+  background-color: #ffffff;
+  transition : 0.5s;
+}
+test-view:hover{
+  background-color: #00cccc;
 }
 test-view.success {
   background-color: #00cc00;
 }
+test-view.success:hover{
+  background-color: #00ff00;
+}
 test-view.failure{
   background-color: #cc0000;
 }
-@-webkit-keyframes rolling-grad {
-  from {
-    background-position : 0px 0px;
-  }
-  to {
-    background-position : 269px 0px;
-  }
+test-view.failure:hover{
+  background-color: #ff0000;
 }
 test-view.running{
   background: repeating-linear-gradient(to right, #cccc00, #ffff00, #cccc00 25%);

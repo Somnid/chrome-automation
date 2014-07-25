@@ -1,0 +1,8 @@
+@-webkit-keyframes rolling-grad {
+  from {
+    background-position : 0px 0px;
+  }
+  to {
+    background-position : 269px 0px;
+  }
+}
