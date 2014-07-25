@@ -153,11 +153,20 @@ var Actions = (function(){
 	}
 	
 	function waitUntilUrlChange(tab, url, timeout){
-		timeout = timeout || 5000;
 		return new Promise(function(resolve, reject){
 			var startTime = new Date().getTime();
 			var urlRegex = new RegExp(url);
-			chrome.runtime.
+			function pageLoaded(pageData, messageSender){
+			  chrome.runtime.onMessage.removeListener(pageLoaded);
+			  if(tab.id == messageSender.tab.id && pageData.event == "pageLoad"){
+			    if(url && urlRegex.test(tab.url)){
+			      resolve({ tab : tab, result : null });
+			    }else if(!url){
+			      resolve({ tab : tab, result : tab.url });
+			    }
+			  }
+			}
+			chrome.runtime.onMessage.addListener(pageLoaded);
 		});
 	}
 	
@@ -204,7 +213,7 @@ var Actions = (function(){
 				resolve({ tab : tab, result : result });
 			});
 		});
-    } 
+  } 
 	
 	return {
 		getCurrentContextTab : getCurrentContextTab,
@@ -220,6 +229,7 @@ var Actions = (function(){
 		hasValue : hasValue,
 		hasText : hasText,
 		waitUntilUrl : waitUntilUrl,
+		waitUntilUrlChange : waitUntilUrlChange,
 		waitUntilElement : waitUntilElement,
 		captureTab : captureTab,
 		downloadInTab : downloadInTab
