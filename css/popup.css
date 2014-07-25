@@ -37,7 +37,7 @@ test-view.failure:hover{
   background-color: #ff0000;
 }
 test-view.running{
-  background: repeating-linear-gradient(to right, #cccc00, #ffff00, #cccc00 25%);
+  background: repeating-linear-gradient(to right, #00cccc, #00ffff, #00cccc 25%);
   -webkit-animation-name : rolling-grad;
   -webkit-animation-duration: 5s;
   -webkit-animation-iteration-count: infinite;
