@@ -135,11 +135,11 @@ var Actions = (function(){
 	  return new Promise(function(resolve, reject){
 		  if(tab){
 			  chrome.tabs.update(tab.id, { url : url }, function(tab){
-				  return waitUntilUrlChange(tab, url, timeout).then(resolve);
+				  return waitUntilUrlChange(tab, null, timeout).then(resolve);
 		  	});
 		  }else{
 			  chrome.tabs.update({ url : url }, function(tab){
-				  return waitUntilUrlChange(tab, url, timeout).then(resolve);
+				  return waitUntilUrlChange(tab, null, timeout).then(resolve);
 			  });
 		  }
 	  });
