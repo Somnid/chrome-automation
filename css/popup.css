@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'FontAwesome';
+  src: url('../fonts/fontawesome.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 html {
   width: 300px;
   font-family: arial;
@@ -57,6 +64,26 @@ test-group-view {
 }
 test-group-view::shadow .title{
   cursor: pointer;
+}
+test-group-view::shadow .header{
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items : center;
+}
+test-group-view::shadow .run, #run-all {
+  font-family: "FontAwesome";
+  font-weight: normal;
+  font-style: normal;
+  font-variant: normal;
+}
+test-group-view::shadow .run::before, #run-all::before {
+  font-family: "FontAwesome";
+  content: "\f04b";
+  content: "\f1b9";
+  font-weight: normal;
+  font-style: normal;
+  font-variant: normal;
 }
 #tests {
   max-height: 500px;

@@ -15,20 +15,6 @@ var Actions = (function(){
 			});
 		});
 	}
-
-	function navigate(tab, url){
-		return new Promise(function(resolve, reject){
-			if(tab){
-				chrome.tabs.update(tab.id, { url : url }, function(tab){
-					resolve({tab : tab});
-				});
-			}else{
-				chrome.tabs.update({ url : url }, function(tab){
-					resolve({tab : tab});
-				});
-			}
-		});
-	}
 	 
 	function executeScript(tab, scriptText){
 		return new Promise(function(resolve, reject){
@@ -131,6 +117,34 @@ var Actions = (function(){
 		});
 	}
 	
+	function navigate(tab, url){
+		return new Promise(function(resolve, reject){
+			if(tab){
+				chrome.tabs.update(tab.id, { url : url }, function(tab){
+					resolve({tab : tab});
+				});
+			}else{
+				chrome.tabs.update({ url : url }, function(tab){
+					resolve({tab : tab});
+				});
+			}
+		});
+	}
+	
+	function navigateAndWaitUntilUrlChange(tab, url, timeout){
+	  return new Promise(function(resolve, reject){
+		  if(tab){
+			  chrome.tabs.update(tab.id, { url : url }, function(tab){
+				  return waitUntilUrlChange(tab, url, timeout).then(resolve);
+		  	});
+		  }else{
+			  chrome.tabs.update({ url : url }, function(tab){
+				  return waitUntilUrlChange(tab, url, timeout).then(resolve);
+			  });
+		  }
+	  });
+	}
+	
 	function waitUntilUrl(tab, url, timeout){
 		timeout = timeout || 5000;
 		return new Promise(function(resolve, reject){
@@ -160,13 +174,23 @@ var Actions = (function(){
 			  chrome.runtime.onMessage.removeListener(pageLoaded);
 			  if(tab.id == messageSender.tab.id && pageData.event == "pageLoad"){
 			    if(url && urlRegex.test(tab.url)){
-			      resolve({ tab : tab, result : null });
+			      resolve({ tab : tab, result : tab.url });
 			    }else if(!url){
 			      resolve({ tab : tab, result : tab.url });
 			    }
 			  }
 			}
 			chrome.runtime.onMessage.addListener(pageLoaded);
+			if(timeout){
+  			setTimeout(function(){
+  			  var message = "Tab failed to reload";
+  			  if(url){
+  			    message += " to url: " + url;
+  			  }
+  			  message += " in " + timeout + " miliseconds";
+  			  reject(message);
+  			}, timeout);
+			}
 		});
 	}
 	
@@ -213,7 +237,15 @@ var Actions = (function(){
 				resolve({ tab : tab, result : result });
 			});
 		});
-  } 
+  }
+  
+  function wait(tab, duration){
+    return new Promise(function(resolve, reject){
+      setTimeout(function(){
+        resolve({ tab : tab });
+      }, duration)
+    });
+  }
 	
 	return {
 		getCurrentContextTab : getCurrentContextTab,
@@ -230,8 +262,10 @@ var Actions = (function(){
 		hasText : hasText,
 		waitUntilUrl : waitUntilUrl,
 		waitUntilUrlChange : waitUntilUrlChange,
+		navigateAndWaitUntilUrlChange : navigateAndWaitUntilUrlChange,
 		waitUntilElement : waitUntilElement,
 		captureTab : captureTab,
-		downloadInTab : downloadInTab
+		downloadInTab : downloadInTab,
+		wait : wait
 	};
 })();
