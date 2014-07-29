@@ -30,6 +30,19 @@ var TestUiView = (function(){
     TestRunner.runTests(testConfig);
   }
   function render(){
+    this.options.model.sort(function(a, b){
+      if(a.subtests && !b.subtests){
+        return -1;
+      }else if(!a.subtests && b.subtests){
+        return 1;
+      }
+      if(a.name > b.name){
+        return 1
+      }else if(a.aname < b.name){
+        return -1;
+      }
+      return 0;
+    });
     for(var i = 0; i < this.options.model.length; i++){
       var testElement = this.getTestElement(this.options.model[i]);
       this.dom.tests.appendChild(testElement);

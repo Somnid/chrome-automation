@@ -9,6 +9,7 @@ html {
   width: 300px;
   font-family: arial;
   margin: 0px;
+  -webkit-user-select: none;
 }
 body {
   margin: 0px;
@@ -80,12 +81,27 @@ test-group-view::shadow .run, #run-all {
 test-group-view::shadow .run:hover, #run-all:hover{
   color: #00cccc;
 }
-test-group-view::shadow .run::before, #run-all::before {
+test-group-view::shadow .run::before, #run-all::after {
   font-family: "FontAwesome";
   content: "\f04b";
   font-weight: normal;
   font-style: normal;
   font-variant: normal;
+}
+#run-all::after {
+  margin-left: 10px;
+}
+test-group-view::shadow .container {
+  display: none;
+}
+test-group-view.open::shadow .container {
+  display: block;
+}
+test-group-view:hover {
+  background: #00efef;
+}
+test-group-view.open:hover {
+  background: #efefef;
 }
 #tests {
   max-height: 500px;
