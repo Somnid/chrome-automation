@@ -1,6 +1,6 @@
 var TestRunner = (function(){
   function runTests(arrayOfTests, currentTestChangedCallback){
-    currentTestChangedCallback(arrayOfTest[0]);
+    currentTestChangedCallback(arrayOfTests[0]);
     var promise = runTest(arrayOfTests[0]);
     for(var i = 1; i < arrayOfTest.length; i++){
       promise.then(function(){

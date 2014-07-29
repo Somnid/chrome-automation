@@ -23,6 +23,7 @@ var TestGroupView = (function(){
     element.attachObservers = attachObservers.bind(element);
     element.renderTests = renderTests.bind(element);
     element.onClick = onClick.bind(element);
+    element.onRunClick = onRunClick.bind(element);
     element.onFailure = onFailure.bind(element);
     element.onSuccess = onSuccess.bind(element);
   }
@@ -33,8 +34,10 @@ var TestGroupView = (function(){
     this.dom.shadowRoot.appendChild(tmpl);
   }
   function gatherSelectors(){
+    this.dom.runButton = this.shadowRoot.querySelector(".run");
   }
   function attachEvents(){
+    this.dom.runButton.addEventListener("click", this.onRunClick);
     this.addEventListener("click", this.onClick);
   }
   function attachObservers(){
@@ -64,7 +67,7 @@ var TestGroupView = (function(){
     this.dom.errorMessage.innerText = message;
     this.dom.shadowRoot.appendChild(this.dom.errorMessage);
   }
-  function onClick(e){
+  function onRunClick(e){
     e.preventDefault();
     e.stopPropagation();
     this.classList.remove("success");
@@ -76,6 +79,9 @@ var TestGroupView = (function(){
     TestRunner.runTests(this.tests)
       .then(this.onSuccess)
       .catch(this.onError);
+  }
+  function onClick(){
+    this.classList.toggle("open");
   }
   return {
     create : create
