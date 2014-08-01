@@ -78,6 +78,9 @@ test-group-view::shadow .run, #run-all {
   cursor: pointer;
   transition : 0.5s;
 }
+test-group-view::shadow .run {
+  margin-left: auto;
+}
 test-group-view::shadow .run:hover, #run-all:hover{
   color: #00cccc;
 }
