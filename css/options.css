@@ -1,0 +1,11 @@
+body {
+  font-family: arial;
+  color: #333333;
+}
+input { 
+  display: block;
+  height: 30px;
+  margin: 10px 0px 10px 0px;
+  padding: 0px 5px 0px 5px;
+  width: 500px;
+}
