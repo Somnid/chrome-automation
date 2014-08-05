@@ -17,6 +17,7 @@ var TestRunner = (function(){
       return func({}, Actions);
     }).catch(function(error){
       console.log(error);
+      throw(error);
     });
   }
   return {

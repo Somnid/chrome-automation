@@ -169,7 +169,7 @@ var Actions = (function(){
 	function waitUntilUrlChange(tab, url, timeout){
 		return new Promise(function(resolve, reject){
 			var startTime = new Date().getTime();
-			var urlRegex = new RegExp(url);
+			var urlRegex = url ? new RegExp(url) : new RegExp();
 			function pageLoaded(pageData, messageSender){
 			  chrome.runtime.onMessage.removeListener(pageLoaded);
 			  if(tab.id == messageSender.tab.id && pageData.event == "pageLoad"){

@@ -30,6 +30,11 @@ var TestUiView = (function(){
     TestRunner.runTests(testConfig);
   }
   function render(){
+    if(!this.options.model || this.options.model.length < 1){
+      var span = document.createElement("span");
+      span.innerText = "No Tests Available";
+      this.dom.test.appendChild(span);
+    }
     this.options.model.sort(function(a, b){
       if(a.subtests && !b.subtests){
         return -1;
