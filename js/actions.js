@@ -26,8 +26,14 @@ var Actions = (function(){
 	
 	function clickElement(tab, elementQuery){
 		return new Promise(function(resolve, reject){
-			var code = "document.querySelector(\"" + elementQuery + "\").click()";
+		  var code  = "";
+			code +="document.querySelector(\"" + elementQuery + "\").click();";
+			code += "document.querySelector(\"" + elementQuery + "\");";
 			chrome.tabs.executeScript(tab.id, { code : code }, function(result){
+			  console.log("clicking:",result);
+			  if(result[0] == null){
+			    reject("Did not find element to click: " + elementQuery);
+			  }
 				resolve({ tab : tab, result : result});
 			});
 		});
@@ -203,10 +209,33 @@ var Actions = (function(){
 					var elapsedTime = new Date().getTime() - startTime;
 					executeScript(tab, "document.querySelectorAll('" + elementSelector + "')")
 					.then(function(result){
-						if(result.result && result.result.length > 0){
+						if(result.result && result.result.length > 0 && result.result[0]){
 							resolve({ tab : tab, result : result });
 						}else if(elapsedTime > timeout){
 							reject("Element " + elementSelector + " exceeded timeout of " + timeout);
+						}else{
+							setTimeout(testElement, 500);
+						}
+					});
+				});
+			}
+			testElement();
+		});
+	}
+	
+	function waitUntilElementHasClass(tab, elementSelector, className, timeout){
+		timeout = timeout || 5000;
+		return new Promise(function(resolve, reject){
+			var startTime = new Date().getTime();
+			function testElement(){
+				chrome.tabs.get(tab.id, function(tab){
+					var elapsedTime = new Date().getTime() - startTime;
+					executeScript(tab, "document.querySelector('" + elementSelector + "').classList.indexOf('" + className + "') != -1")
+					.then(function(result){
+						if(result.result && result.result.length > 0 && result.result[0]){
+							resolve({ tab : tab, result : result });
+						}else if(elapsedTime > timeout){
+							reject("Element " + elementSelector + " has class \"" + className + "\" exceeded timeout of " + timeout);
 						}else{
 							setTimeout(testElement, 500);
 						}
@@ -264,6 +293,7 @@ var Actions = (function(){
 		waitUntilUrlChange : waitUntilUrlChange,
 		navigateAndWaitUntilUrlChange : navigateAndWaitUntilUrlChange,
 		waitUntilElement : waitUntilElement,
+		waitUntilElementHasClass : waitUntilElementHasClass,
 		captureTab : captureTab,
 		downloadInTab : downloadInTab,
 		wait : wait
