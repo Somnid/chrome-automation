@@ -18,7 +18,9 @@ var Actions = (function(){
 	 
 	function executeScript(tab, scriptText){
 		return new Promise(function(resolve, reject){
+		  console.log("script run: ", scriptText);
 			chrome.tabs.executeScript(tab.id, { code : scriptText }, function(result){
+			  console.log("script result", result);
 				resolve({ tab : tab, result : result});
 			});
 		});
@@ -70,7 +72,19 @@ var Actions = (function(){
 	
 	function updateValue(tab, elementQuery, value){
 		return new Promise(function(resolve, reject){
-			var code = "document.querySelector(\"" + elementQuery + "\").value = \"" + value + "\"";
+			var code = "document.querySelector(\"" + elementQuery + "\").value = \"" + value + "\";";
+			chrome.tabs.executeScript(tab.id, { code : code }, function(result){
+				resolve({ tab : tab, result : result});
+			});
+		});
+	}
+	
+	function triggerElement(tab, elementQuery, value){
+		return new Promise(function(resolve, reject){
+			var code = "document.querySelector(\"" + elementQuery + "\").value = \"" + value + "\";";
+			//
+			//
+			
 			chrome.tabs.executeScript(tab.id, { code : code }, function(result){
 				resolve({ tab : tab, result : result});
 			});
@@ -151,27 +165,6 @@ var Actions = (function(){
 	  });
 	}
 	
-	function waitUntilUrl(tab, url, timeout){
-		timeout = timeout || 5000;
-		return new Promise(function(resolve, reject){
-			var startTime = new Date().getTime();
-			var urlRegex = new RegExp(url);
-			function testUrl(){
-				chrome.tabs.get(tab.id, function(tab){
-					var elapsedTime = new Date().getTime() - startTime;
-					if(urlRegex.test(tab.url)){
-						resolve({ tab : tab, result : null });
-					}else if(elapsedTime > timeout){
-						reject("Exceeded timeout of " + timeout + "ms for url navigation: " + url);
-					}else{
-						setTimeout(testUrl, 500);
-					}
-				});
-			}
-			testUrl();
-		});
-	}
-	
 	function waitUntilUrlChange(tab, url, timeout){
 		return new Promise(function(resolve, reject){
 			var startTime = new Date().getTime();
@@ -189,7 +182,7 @@ var Actions = (function(){
 			chrome.runtime.onMessage.addListener(pageLoaded);
 			if(timeout){
   			setTimeout(function(){
-  			  var message = "Tab failed to reload";
+  			  var message = "Tab failed to navigate";
   			  if(url){
   			    message += " to url: " + url;
   			  }
@@ -207,9 +200,10 @@ var Actions = (function(){
 			function testElement(){
 				chrome.tabs.get(tab.id, function(tab){
 					var elapsedTime = new Date().getTime() - startTime;
-					executeScript(tab, "document.querySelectorAll('" + elementSelector + "')")
+					var script = "document.querySelectorAll(\"" + elementSelector + "\").length"
+					executeScript(tab, script)
 					.then(function(result){
-						if(result.result && result.result.length > 0 && result.result[0]){
+						if(result.result && result.result.length > 0 && result.result[0] > 0){
 							resolve({ tab : tab, result : result });
 						}else if(elapsedTime > timeout){
 							reject("Element " + elementSelector + " exceeded timeout of " + timeout);
@@ -223,19 +217,20 @@ var Actions = (function(){
 		});
 	}
 	
-	function waitUntilElementHasClass(tab, elementSelector, className, timeout){
+	function waitUntilNoElement(tab, elementSelector, timeout){
 		timeout = timeout || 5000;
 		return new Promise(function(resolve, reject){
 			var startTime = new Date().getTime();
 			function testElement(){
 				chrome.tabs.get(tab.id, function(tab){
 					var elapsedTime = new Date().getTime() - startTime;
-					executeScript(tab, "document.querySelector('" + elementSelector + "').classList.indexOf('" + className + "') != -1")
+					var script = "document.querySelectorAll(\"" + elementSelector + "\").length"
+					executeScript(tab, script)
 					.then(function(result){
-						if(result.result && result.result.length > 0 && result.result[0]){
+						if(!result.result || !result.result.length > 0 || result.result[0] < 1){
 							resolve({ tab : tab, result : result });
 						}else if(elapsedTime > timeout){
-							reject("Element " + elementSelector + " has class \"" + className + "\" exceeded timeout of " + timeout);
+							reject("Element " + elementSelector + " persisted timeout of " + timeout);
 						}else{
 							setTimeout(testElement, 500);
 						}
@@ -289,11 +284,10 @@ var Actions = (function(){
 		updateValue : updateValue,
 		hasValue : hasValue,
 		hasText : hasText,
-		waitUntilUrl : waitUntilUrl,
 		waitUntilUrlChange : waitUntilUrlChange,
 		navigateAndWaitUntilUrlChange : navigateAndWaitUntilUrlChange,
 		waitUntilElement : waitUntilElement,
-		waitUntilElementHasClass : waitUntilElementHasClass,
+		waitUntilNoElement : waitUntilNoElement,
 		captureTab : captureTab,
 		downloadInTab : downloadInTab,
 		wait : wait
