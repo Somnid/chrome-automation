@@ -79,12 +79,11 @@ var Actions = (function(){
 		});
 	}
 	
-	function triggerElement(tab, elementQuery, value){
+	function triggerElement(tab, elementQuery, eventType){
 		return new Promise(function(resolve, reject){
-			var code = "document.querySelector(\"" + elementQuery + "\").value = \"" + value + "\";";
-			//
-			//
-			
+		  var code = "var evt = document.createEvent(\"HTMLEvents\");";
+		  code += "evt.initEvent(\"" + eventType + "\");";
+			code += "document.querySelector(\"" + elementQuery + "\").dispatchEvent(evt);";
 			chrome.tabs.executeScript(tab.id, { code : code }, function(result){
 				resolve({ tab : tab, result : result});
 			});
@@ -166,6 +165,7 @@ var Actions = (function(){
 	}
 	
 	function waitUntilUrlChange(tab, url, timeout){
+	  console.log("waiting for url change" + (url ? " to " + url : ""));
 		return new Promise(function(resolve, reject){
 			var startTime = new Date().getTime();
 			var urlRegex = url ? new RegExp(url) : new RegExp();
@@ -194,6 +194,7 @@ var Actions = (function(){
 	}
 	
 	function waitUntilElement(tab, elementSelector, timeout){
+	  console.log("waiting for element to appear: " + elementSelector);
 		timeout = timeout || 5000;
 		return new Promise(function(resolve, reject){
 			var startTime = new Date().getTime();
@@ -206,7 +207,7 @@ var Actions = (function(){
 						if(result.result && result.result.length > 0 && result.result[0] > 0){
 							resolve({ tab : tab, result : result });
 						}else if(elapsedTime > timeout){
-							reject("Element " + elementSelector + " exceeded timeout of " + timeout);
+							reject("Element " + elementSelector + " did not appear within " + timeout + "miliseconds");
 						}else{
 							setTimeout(testElement, 500);
 						}
@@ -218,6 +219,7 @@ var Actions = (function(){
 	}
 	
 	function waitUntilNoElement(tab, elementSelector, timeout){
+	  console.log("waiting for element to disappear: " + elementSelector);
 		timeout = timeout || 5000;
 		return new Promise(function(resolve, reject){
 			var startTime = new Date().getTime();
@@ -280,6 +282,7 @@ var Actions = (function(){
 		clickElement : clickElement,
 		focusElement : focusElement,
 		toggleElement : toggleElement,
+		triggerElement : triggerElement,
 		printToPageConsole : printToPageConsole,
 		updateValue : updateValue,
 		hasValue : hasValue,
