@@ -41,15 +41,6 @@ var Actions = (function(){
 		});
 	}
 	
-	function toggleElement(tab, elementQuery, value){
-		return new Promise(function(resolve, reject){
-			var code = "document.querySelector(\"" + elementQuery + "\").checked = " + (value ? "true" : "false");
-			chrome.tabs.executeScript(tab.id, { code : code }, function(result){
-				resolve({ tab : tab, result : result});
-			});
-		});
-	}
-	
 	function focusElement(tab, elementQuery){
 		return new Promise(function(resolve, reject){
 			var code = "document.querySelector('" + elementQuery + "').focus()";
@@ -72,7 +63,16 @@ var Actions = (function(){
 	
 	function updateValue(tab, elementQuery, value){
 		return new Promise(function(resolve, reject){
-			var code = "document.querySelector(\"" + elementQuery + "\").value = \"" + value + "\";";
+		  var code = "";
+		  if(Array.isArray(value)){ //assume multiselect
+		    code = "Array.prototype.forEach.call(document.querySelector(\"" + elementQuery + "\").options, function(opt){ if(" + JSON.stringify(value) +  ".indexOf(opt.value) != -1) { opt.selected = true; } else { opt.selected = false } });"
+		  }
+		  if(typeof value == "boolean"){
+		    code = "document.querySelector(\"" + elementQuery + "\").checked = " + (value ? "true" : "false");
+		  }else{
+			  code = "document.querySelector(\"" + elementQuery + "\").value = \"" + value + "\";";
+		  }
+		  console.log(code);
 			chrome.tabs.executeScript(tab.id, { code : code }, function(result){
 				resolve({ tab : tab, result : result});
 			});
@@ -272,6 +272,18 @@ var Actions = (function(){
       }, duration)
     });
   }
+
+  function fillForm(tab, fieldMap){
+    var promise = new Promise(function(resolve, reject){
+      resolve();
+    });
+    for(var key in fieldMap){
+      promise = promise.then(function(){
+        return updateValue(tab, this, fieldMap[this]);
+      }.bind(key));
+    }
+    return promise;
+  }
 	
 	return {
 		getCurrentContextTab : getCurrentContextTab,
@@ -281,7 +293,6 @@ var Actions = (function(){
 		appendScript : appendScript,
 		clickElement : clickElement,
 		focusElement : focusElement,
-		toggleElement : toggleElement,
 		triggerElement : triggerElement,
 		printToPageConsole : printToPageConsole,
 		updateValue : updateValue,
@@ -293,6 +304,7 @@ var Actions = (function(){
 		waitUntilNoElement : waitUntilNoElement,
 		captureTab : captureTab,
 		downloadInTab : downloadInTab,
-		wait : wait
+		wait : wait,
+		fillForm : fillForm
 	};
 })();
