@@ -7,7 +7,7 @@ var Actions = (function(){
 			});
 		});
 	}
-	
+
 	function getCurrentContextTab(){
 		return new Promise(function(resolve, reject){
 			chrome.tabs.getCurrent(function(tab){
@@ -15,7 +15,7 @@ var Actions = (function(){
 			});
 		});
 	}
-	 
+
 	function executeScript(tab, scriptText){
 		return new Promise(function(resolve, reject){
 		  console.log("script run: ", scriptText);
@@ -25,7 +25,7 @@ var Actions = (function(){
 			});
 		});
 	}
-	
+
 	function clickElement(tab, elementQuery){
 		return new Promise(function(resolve, reject){
 		  var code  = "";
@@ -40,7 +40,7 @@ var Actions = (function(){
 			});
 		});
 	}
-	
+
 	function focusElement(tab, elementQuery){
 		return new Promise(function(resolve, reject){
 			var code = "document.querySelector('" + elementQuery + "').focus()";
@@ -49,7 +49,7 @@ var Actions = (function(){
 			});
 		});
 	}
-	
+
 	function appendScript(tab, scriptText){
 		return new Promise(function(resolve, reject){
 			var code = "var injected_script = document.createElement('script');"
@@ -60,7 +60,7 @@ var Actions = (function(){
 			});
 		});
 	}
-	
+
 	function updateValue(tab, elementQuery, value){
 		return new Promise(function(resolve, reject){
 		  var code = "";
@@ -78,7 +78,7 @@ var Actions = (function(){
 			});
 		});
 	}
-	
+
 	function triggerElement(tab, elementQuery, eventType){
 		return new Promise(function(resolve, reject){
 		  var code = "var evt = document.createEvent(\"HTMLEvents\");";
@@ -89,7 +89,7 @@ var Actions = (function(){
 			});
 		});
 	}
-		
+
 	function fillOutForm(tab, elementValueMap){
     return new Promise(function(resolve, reject){
       for(var key in elementValueMap){
@@ -100,7 +100,7 @@ var Actions = (function(){
       }
     });
 	}
-	
+
 	function hasValue(tab, elementQuery, value){
 		return new Promise(function(resolve, reject){
 			var code = "document.querySelector(\"" + elementQuery + "\").value == \"" + value + "\"";
@@ -113,7 +113,7 @@ var Actions = (function(){
 			});
 		});
 	}
-	
+
 	function hasText(tab, elementQuery, value){
 		return new Promise(function(resolve, reject){
 			var code = "document.querySelector(\"" + elementQuery + "\").innerText";
@@ -126,7 +126,7 @@ var Actions = (function(){
 			});
 		});
 	}
-	
+
 	function printToPageConsole(tab, value){
 		return new Promise(function(resolve, reject){
 			var code = "console.log('" + value + "');";
@@ -135,7 +135,7 @@ var Actions = (function(){
 			});
 		});
 	}
-	
+
 	function navigate(tab, url){
 		return new Promise(function(resolve, reject){
 			if(tab){
@@ -149,7 +149,7 @@ var Actions = (function(){
 			}
 		});
 	}
-	
+
 	function navigateAndWaitUntilUrlChange(tab, url, timeout){
 	  return new Promise(function(resolve, reject){
 		  if(tab){
@@ -163,7 +163,7 @@ var Actions = (function(){
 		  }
 	  });
 	}
-	
+
 	function waitUntilUrlChange(tab, url, timeout){
 	  console.log("waiting for url change" + (url ? " to " + url : ""));
 		return new Promise(function(resolve, reject){
@@ -192,7 +192,7 @@ var Actions = (function(){
 			}
 		});
 	}
-	
+
 	function waitUntilElement(tab, elementSelector, timeout){
 	  console.log("waiting for element to appear: " + elementSelector);
 		timeout = timeout || 5000;
@@ -217,7 +217,7 @@ var Actions = (function(){
 			testElement();
 		});
 	}
-	
+
 	function waitUntilNoElement(tab, elementSelector, timeout){
 	  console.log("waiting for element to disappear: " + elementSelector);
 		timeout = timeout || 5000;
@@ -242,7 +242,7 @@ var Actions = (function(){
 			testElement();
 		});
 	}
-	
+
 	function captureTab(tab){
 		return new Promise(function(resolve, reject){
 			chrome.tabs.update(tab.id, { active : true }, function(tab){
@@ -252,19 +252,19 @@ var Actions = (function(){
 			});
 		});
 	}
-	
+
 	function downloadInTab(tab, dataUrl, fileName){
 		return new Promise(function(resolve, reject){
 			var code = "var link = document.createElement('a');";
-			code += "link.href = '" + dataUrl + "';"; 
-			code += "link.download = '" + fileName + "';"; 
+			code += "link.href = '" + dataUrl + "';";
+			code += "link.download = '" + fileName + "';";
 			code += "link.click();"
 			chrome.tabs.executeScript(tab.id, { code : code }, function(result){
 				resolve({ tab : tab, result : result });
 			});
 		});
   }
-  
+
   function wait(tab, duration){
     return new Promise(function(resolve, reject){
       setTimeout(function(){
@@ -284,7 +284,24 @@ var Actions = (function(){
     }
     return promise;
   }
-	
+
+  var actionMap = {
+    update : updateValue,
+    click : clickElement,
+    navigate : navigateAndWaitUntilUrlChange
+  };
+  function doActions(tab, actions){
+    var promise = new Promise(function(resolve, reject){
+      resolve();
+    });
+    for(var i = 0; i < actions.length; i++){
+      promise = promise.then(function(){
+        return actionMap[actions[this].action](tab, actions[this]);
+      }.bind(i));
+    }
+    return promise;
+  }
+
 	return {
 		getCurrentContextTab : getCurrentContextTab,
 		createTab : createTab,
