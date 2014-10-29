@@ -43,7 +43,7 @@ var TestUiView = (function(){
       }
       if(a.name > b.name){
         return 1
-      }else if(a.aname < b.name){
+      }else if(a.name < b.name){
         return -1;
       }
       return 0;
