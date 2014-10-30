@@ -6,14 +6,14 @@ Config File Example:
 [
   {
     "name" : "login",
-    "test" " "path/to/test.js"
+    "file" " "path/to/test.js"
   },
   {
     "name" : "other tests",
     "subtests" : [
       {
         "name" : "other test",
-        "test" : "path/to/other-test.js"
+        "file" : "path/to/other-test.js"
       }
     ]
   }
