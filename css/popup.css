@@ -49,7 +49,10 @@ test-view.running{
   -webkit-animation-name : rolling-grad;
   -webkit-animation-duration: 5s;
   -webkit-animation-iteration-count: infinite;
-  -webkit-animation-timing-function: linear; 
+  -webkit-animation-timing-function: linear;
+}
+test-view::shadow .title {
+  font-size: 14px;
 }
 test-group-view {
   display: flex;
@@ -66,6 +69,7 @@ test-group-view {
 }
 test-group-view::shadow .title{
   cursor: pointer;
+  font-size: 14px;
 }
 test-group-view::shadow .header{
   display: flex;
@@ -78,6 +82,7 @@ test-group-view::shadow .run, #run-all {
   border: none;
   cursor: pointer;
   transition : 0.5s;
+  height: 30px;
 }
 test-group-view::shadow .run {
   margin-left: auto;

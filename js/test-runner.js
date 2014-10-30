@@ -11,7 +11,7 @@ var TestRunner = (function(){
     return promise;
   }
   function runTest(test){
-    var filePath = test.file 
+    var filePath = test.file
     return Ajax.promiseRequest({ url : filePath }).then(function(fileContents){
       var func = new Function("params", "Actions", fileContents);
       return func({}, Actions);

@@ -61,6 +61,7 @@ var TestUiView = (function(){
       testElement.tests = test.subtests;
     }else{
       testElement = document.createElement("test-view");
+      test.file = util.isAbsolutePath(test.file) ? test.file : this.options.basePath + "/" + test.file
       testElement.test = test;
     }
     return testElement;
