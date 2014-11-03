@@ -291,12 +291,11 @@ var Actions = (function(){
     navigate : navigateAndWaitUntilUrlChange
   };
   function doActions(tab, actions){
-    var promise = new Promise(function(resolve, reject){
-      resolve();
-    });
+    var promise = new Promise.resolve();
+
     for(var i = 0; i < actions.length; i++){
       promise = promise.then(function(){
-        return actionMap[actions[this].action](tab, actions[this]);
+        return actionMap[actions[this].action].apply(tab, actions[this].args);
       }.bind(i));
     }
     return promise;

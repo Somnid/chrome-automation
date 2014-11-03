@@ -3,6 +3,7 @@ Chrome Automation
 
 Config File Example:
 
+```
 [
   {
     "name" : "login",
@@ -18,3 +19,4 @@ Config File Example:
     ]
   }
 ]
+```
