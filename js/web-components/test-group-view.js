@@ -2,7 +2,7 @@ var testGroupViewProto = Object.create(HTMLElement.prototype);
 
 testGroupViewProto.createdCallback = function(){
   TestGroupView.create(this);
-}
+};
 document.registerElement("test-group-view", {
   prototype : testGroupViewProto
 });

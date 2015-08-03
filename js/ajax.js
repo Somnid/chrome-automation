@@ -27,7 +27,7 @@ var Ajax = (function(){
                     request.onreadystatechange = function(){}; 
                 } 
             } 
-        } 
+        }; 
           
         if(data && dataType){ 
             request.setRequestHeader("Content-Type", getMimeType(dataType)); 

@@ -42,7 +42,7 @@ var TestUiView = (function(){
         return 1;
       }
       if(a.name > b.name){
-        return 1
+        return 1;
       }else if(a.name < b.name){
         return -1;
       }
@@ -61,7 +61,7 @@ var TestUiView = (function(){
       testElement.tests = test.subtests;
     }else{
       testElement = document.createElement("test-view");
-      test.file = util.isAbsolutePath(test.file) ? test.file : this.options.basePath + "/" + test.file
+      test.file = util.isAbsolutePath(test.file) ? test.file : this.options.basePath + "/" + test.file;
       testElement.test = test;
     }
     return testElement;
