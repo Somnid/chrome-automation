@@ -258,7 +258,7 @@ var Actions = (function(){
 			var code = "var link = document.createElement('a');";
 			code += "link.href = '" + dataUrl + "';";
 			code += "link.download = '" + fileName + "';";
-			code += "link.click();"
+			code += "link.click();";
 			chrome.tabs.executeScript(tab.id, { code : code }, function(result){
 				resolve({ tab : tab, result : result });
 			});
@@ -269,7 +269,7 @@ var Actions = (function(){
     return new Promise(function(resolve, reject){
       setTimeout(function(){
         resolve({ tab : tab });
-      }, duration)
+      }, duration);
     });
   }
 
@@ -291,13 +291,15 @@ var Actions = (function(){
     navigate : navigateAndWaitUntilUrlChange
   };
   function doActions(tab, actions){
-    var promise = new Promise.resolve();
+    var promise = new Promise();
 
     for(var i = 0; i < actions.length; i++){
       promise = promise.then(function(){
         return actionMap[actions[this].action].apply(tab, actions[this].args);
       }.bind(i));
     }
+    promise.resolve();
+    
     return promise;
   }
 
@@ -321,6 +323,7 @@ var Actions = (function(){
 		captureTab : captureTab,
 		downloadInTab : downloadInTab,
 		wait : wait,
-		fillForm : fillForm
+		fillForm : fillForm,
+		doActions : doActions
 	};
 })();
