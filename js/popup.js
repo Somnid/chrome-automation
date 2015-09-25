@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function(){
           var testConfig = JSON.parse(content);
           TestUiView.create({
             model : testConfig,
-            basePath : util.getParentDirectory(configPath)
+            basePath : Util.getParentDirectory(configPath)
           });
         },
         function(error){

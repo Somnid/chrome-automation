@@ -12,14 +12,36 @@ var TestRunner = (function(){
   }
   function runTest(test){
     var filePath = test.file;
-    return Ajax.promiseRequest({ url : filePath }).then(function(fileContents){
-      var func = new Function("params", "Actions", fileContents);
-      return func({}, Actions);
-    }).catch(function(error){
-      console.log(error);
-      throw(error);
-    });
+    return Ajax.promiseRequest({ url : filePath })
+      .then(readFile)
+      .catch(error);
   }
+  
+  function readFile(fileContents){
+    var actionParserService = ActionParserService.create({
+      actions : Actions
+    });
+    var actions = actionParserService.parse(fileContents);
+    return Actions.getCurrentContextTab()
+      .then(function(tab){
+          return chainSteps(actions, tab);
+      });
+  }
+  
+  function error(exception){
+    console.log(exception);
+    throw(exception);
+  }
+  
+  function chainSteps(steps, tab){
+		var promise = Promise.resolve({ tab : tab });
+		for(var i = 0; i < steps.length; i++){
+			promise = promise.then(function(result){
+			  return steps[this].action.apply(result.tab, steps[this].args);
+			}.bind(i));
+		}
+		return promise;
+	}
   return {
     runTests : runTests,
     runTest : runTest
