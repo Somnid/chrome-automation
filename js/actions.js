@@ -1,5 +1,7 @@
 var Actions = (function(){
 
+  var gtab;
+
 	function createTab(url){
 		return new Promise(function(resolve, reject){
 			chrome.tabs.create({ url : url }, function(tab){
@@ -10,9 +12,94 @@ var Actions = (function(){
 
 	function getCurrentContextTab(){
 		return new Promise(function(resolve, reject){
-			chrome.tabs.getCurrent(function(tab){
-				resolve(tab);
+			chrome.tabs.query({ currentWindow : true, active : true }, function(tab){
+				resolve(tab[0]);
 			});
+		});
+	}
+	
+	  //updated
+	function updateValue(elementQuery, value){
+		return new Promise((resolve, reject) => {
+		  var code = "";
+		  if(Array.isArray(value)){ //assume multiselect
+		    code = "Array.prototype.forEach.call(document.querySelector(\"" + elementQuery + "\").options, function(opt){ if(" + JSON.stringify(value) +  ".indexOf(opt.value) != -1) { opt.selected = true; } else { opt.selected = false } });";
+		  }
+		  if(typeof value == "boolean"){
+		    code = "document.querySelector(\"" + elementQuery + "\").checked = " + (value ? "true" : "false");
+		  }else{
+			  code = `document.querySelector('${elementQuery}').value = '${value}';`;
+		  }
+	    code += `document.querySelector('${elementQuery}');`;
+	    console.log(code);
+			chrome.tabs.executeScript(this.id, { code : code, runAt : "document_end" }, result => {
+			  if(result[0] === null){
+			    reject(`Did not find element to update: ${elementQuery}`);
+			  }
+				resolve({ tab : this, result : result});
+			});
+		});
+	}
+	
+	  //updated
+	function clickElement(elementQuery){
+		return new Promise((resolve, reject) => {
+		  var code  = "";
+			code +="document.querySelector(\"" + elementQuery + "\").click();";
+			code += "document.querySelector(\"" + elementQuery + "\");";
+			chrome.tabs.executeScript(this.id, { code : code }, result => {
+			  console.log("clicking:",result);
+			  if(result[0] === null){
+			    reject("Did not find element to click: " + elementQuery);
+			  }
+				resolve({ tab : this, result : result});
+			});
+		});
+	}
+	
+	//updated
+	function navigateAndWaitUntilUrlChange(url, timeout){
+	  return new Promise((resolve, reject) => {
+		  if(this){
+			  chrome.tabs.update(this.id, { url : url }, function(tab){
+				  return waitUntilUrlChange(tab, null, timeout).then(resolve);
+		  	});
+		  }else{
+			  chrome.tabs.update({ url : url }, function(tab){
+				  return waitUntilUrlChange(tab, null, timeout).then(resolve);
+			  });
+		  }
+	  });
+	}
+	
+	function waitUntilUrlChange(tab, url, timeout){
+	  console.log("waiting for url change" + (url ? " to " + url : ""));
+		return new Promise((resolve, reject) => {
+			var startTime = new Date().getTime();
+			var urlRegex = url ? new RegExp(url) : new RegExp();
+			function pageLoaded(pageData, messageSender){
+			  console.log(`tab changed successfully to ${tab.url}`);
+			  gtab = tab;
+			  chrome.runtime.onMessage.removeListener(pageLoaded);
+			  if(tab.id == messageSender.tab.id && pageData.event == "pageLoad"){
+			    if(url && urlRegex.test(tab.url)){
+			      resolve({ tab : tab, result : tab.url });
+			    }else if(!url){
+			      resolve({ tab : tab, result : tab.url });
+			    }
+			  }
+			}
+			chrome.runtime.onMessage.addListener(pageLoaded);
+			if(timeout){
+  			setTimeout(function(){
+  			  var message = "Tab failed to navigate";
+  			  if(url){
+  			    message += " to url: " + url;
+  			  }
+  			  message += " in " + timeout + " miliseconds";
+  			  reject(message);
+  			}, timeout);
+			}
 		});
 	}
 
@@ -21,21 +108,6 @@ var Actions = (function(){
 		  console.log("script run: ", scriptText);
 			chrome.tabs.executeScript(tab.id, { code : scriptText }, function(result){
 			  console.log("script result", result);
-				resolve({ tab : tab, result : result});
-			});
-		});
-	}
-
-	function clickElement(tab, elementQuery){
-		return new Promise(function(resolve, reject){
-		  var code  = "";
-			code +="document.querySelector(\"" + elementQuery + "\").click();";
-			code += "document.querySelector(\"" + elementQuery + "\");";
-			chrome.tabs.executeScript(tab.id, { code : code }, function(result){
-			  console.log("clicking:",result);
-			  if(result[0] == null){
-			    reject("Did not find element to click: " + elementQuery);
-			  }
 				resolve({ tab : tab, result : result});
 			});
 		});
@@ -52,27 +124,9 @@ var Actions = (function(){
 
 	function appendScript(tab, scriptText){
 		return new Promise(function(resolve, reject){
-			var code = "var injected_script = document.createElement('script');"
+			var code = "var injected_script = document.createElement('script');";
 			code += "injected_script.innerText = \"" + scriptText + "\";";
 			code += "document.body.appendChild(injected_script);";
-			chrome.tabs.executeScript(tab.id, { code : code }, function(result){
-				resolve({ tab : tab, result : result});
-			});
-		});
-	}
-
-	function updateValue(tab, elementQuery, value){
-		return new Promise(function(resolve, reject){
-		  var code = "";
-		  if(Array.isArray(value)){ //assume multiselect
-		    code = "Array.prototype.forEach.call(document.querySelector(\"" + elementQuery + "\").options, function(opt){ if(" + JSON.stringify(value) +  ".indexOf(opt.value) != -1) { opt.selected = true; } else { opt.selected = false } });"
-		  }
-		  if(typeof value == "boolean"){
-		    code = "document.querySelector(\"" + elementQuery + "\").checked = " + (value ? "true" : "false");
-		  }else{
-			  code = "document.querySelector(\"" + elementQuery + "\").value = \"" + value + "\";";
-		  }
-		  console.log(code);
 			chrome.tabs.executeScript(tab.id, { code : code }, function(result){
 				resolve({ tab : tab, result : result});
 			});
@@ -108,7 +162,7 @@ var Actions = (function(){
 			  if(result && result[0] === true){
 				  resolve({ tab : tab, result : result});
 			  }else{
-			    reject("Element " + elementQuery + " did not contain value: " + value)
+			    reject("Element " + elementQuery + " did not contain value: " + value);
 			  }
 			});
 		});
@@ -121,7 +175,7 @@ var Actions = (function(){
 			  if(result && new RegExp(value).test(result[0])){
 				  resolve({ tab : tab, result : result});
 			  }else{
-			    reject("Element " + elementQuery + " did not contain value: " + value)
+			    reject("Element " + elementQuery + " did not contain value: " + value);
 			  }
 			});
 		});
@@ -150,49 +204,6 @@ var Actions = (function(){
 		});
 	}
 
-	function navigateAndWaitUntilUrlChange(tab, url, timeout){
-	  return new Promise(function(resolve, reject){
-		  if(tab){
-			  chrome.tabs.update(tab.id, { url : url }, function(tab){
-				  return waitUntilUrlChange(tab, null, timeout).then(resolve);
-		  	});
-		  }else{
-			  chrome.tabs.update({ url : url }, function(tab){
-				  return waitUntilUrlChange(tab, null, timeout).then(resolve);
-			  });
-		  }
-	  });
-	}
-
-	function waitUntilUrlChange(tab, url, timeout){
-	  console.log("waiting for url change" + (url ? " to " + url : ""));
-		return new Promise(function(resolve, reject){
-			var startTime = new Date().getTime();
-			var urlRegex = url ? new RegExp(url) : new RegExp();
-			function pageLoaded(pageData, messageSender){
-			  chrome.runtime.onMessage.removeListener(pageLoaded);
-			  if(tab.id == messageSender.tab.id && pageData.event == "pageLoad"){
-			    if(url && urlRegex.test(tab.url)){
-			      resolve({ tab : tab, result : tab.url });
-			    }else if(!url){
-			      resolve({ tab : tab, result : tab.url });
-			    }
-			  }
-			}
-			chrome.runtime.onMessage.addListener(pageLoaded);
-			if(timeout){
-  			setTimeout(function(){
-  			  var message = "Tab failed to navigate";
-  			  if(url){
-  			    message += " to url: " + url;
-  			  }
-  			  message += " in " + timeout + " miliseconds";
-  			  reject(message);
-  			}, timeout);
-			}
-		});
-	}
-
 	function waitUntilElement(tab, elementSelector, timeout){
 	  console.log("waiting for element to appear: " + elementSelector);
 		timeout = timeout || 5000;
@@ -201,7 +212,7 @@ var Actions = (function(){
 			function testElement(){
 				chrome.tabs.get(tab.id, function(tab){
 					var elapsedTime = new Date().getTime() - startTime;
-					var script = "document.querySelectorAll(\"" + elementSelector + "\").length"
+					var script = "document.querySelectorAll(\"" + elementSelector + "\").length";
 					executeScript(tab, script)
 					.then(function(result){
 						if(result.result && result.result.length > 0 && result.result[0] > 0){
@@ -226,10 +237,10 @@ var Actions = (function(){
 			function testElement(){
 				chrome.tabs.get(tab.id, function(tab){
 					var elapsedTime = new Date().getTime() - startTime;
-					var script = "document.querySelectorAll(\"" + elementSelector + "\").length"
+					var script = "document.querySelectorAll(\"" + elementSelector + "\").length";
 					executeScript(tab, script)
 					.then(function(result){
-						if(!result.result || !result.result.length > 0 || result.result[0] < 1){
+						if(!result.result || result.result.length <= 0 || result.result[0] < 1){
 							resolve({ tab : tab, result : result });
 						}else if(elapsedTime > timeout){
 							reject("Element " + elementSelector + " persisted timeout of " + timeout);
@@ -291,14 +302,13 @@ var Actions = (function(){
     navigate : navigateAndWaitUntilUrlChange
   };
   function doActions(tab, actions){
-    var promise = new Promise();
+    var promise = Promise.resolve();
 
     for(var i = 0; i < actions.length; i++){
       promise = promise.then(function(){
         return actionMap[actions[this].action].apply(tab, actions[this].args);
       }.bind(i));
     }
-    promise.resolve();
     
     return promise;
   }
@@ -324,6 +334,7 @@ var Actions = (function(){
 		downloadInTab : downloadInTab,
 		wait : wait,
 		fillForm : fillForm,
-		doActions : doActions
+		doActions : doActions,
+		actionMap : actionMap
 	};
 })();

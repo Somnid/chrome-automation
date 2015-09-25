@@ -1,4 +1,4 @@
-var util = (function(){
+var Util = (function(){
   function stringToDataUri(newString, options){
         options = options || {};
         var mimeType = options.mimeType || "text/plain";
