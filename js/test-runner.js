@@ -29,7 +29,7 @@ var TestRunner = (function(){
   }
   
   function error(exception){
-    console.log(exception);
+    console.error(exception);
     throw(exception);
   }
   

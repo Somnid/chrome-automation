@@ -17,17 +17,20 @@ var ActionParserService = (function(){
   }
 
   function parse(script){
+    script = script.trim();
     var lines = script.split("\n");
     var actions = [];
     
     lines.forEach((line) => {
-      actions.push(this.parseAsAction(line));
+      if(!/^\/\//.test(line)){
+        actions.push(this.parseAsAction(line));
+      }
     });
     
     return actions;
   }
   function parseAsAction(line){
-    var parts = line.split(" ");
+    var parts = Util.splitWhitespace(line);
     var action = this.options.actions.actionMap[parts[0]];
     var args = parts.slice(1).map(x => x.trim());
     return {

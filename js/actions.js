@@ -228,6 +228,56 @@ var Actions = (function(){
 			testElement();
 		});
 	}
+	
+	//updated
+	function waitUntilVisible(elementSelector, timeout){
+	  console.log(`waiting for element to appear: ${elementSelector}`);
+	  var script = `getComputedStyle(document.querySelector('${elementSelector}')).display != "none";`;
+		timeout = timeout || 5000;
+	  return waitUntilCondition(this, script, `Element ${elementSelector} did not appear`);
+	}
+	
+	//updated
+	function waitUntilNotVisible(elementSelector, timeout){
+	  console.log(`waiting for element to appear: ${elementSelector}`);
+	  var script = `getComputedStyle(document.querySelector('${elementSelector}')).display == "none";`;
+		timeout = timeout || 5000;
+	  return waitUntilCondition(this, script, `Element ${elementSelector} did not disappear`);
+	}
+	
+	
+	//updated
+	function waitUntilCondition(tab, script, error, timeout){
+		return new Promise((resolve, reject) => {
+			var startTime = new Date().getTime();
+			function testCondition(){
+				chrome.tabs.get(tab.id, function(tab){
+					var elapsedTime = new Date().getTime() - startTime;
+					executeScript(tab, script)
+					  .then(function(result){
+  						if(result.result && result.result.length > 0 && result.result[0] > 0){
+  							resolve({ tab : tab, result : result });
+  						}else if(elapsedTime > timeout){
+  							reject(error + ` (${timeout}ms)`);
+  						}else{
+  							setTimeout(testCondition, 500);
+  						}
+					});
+				});
+			}
+			testCondition();
+		});
+	}
+	
+	//updated
+  function wait(duration){
+    var tab = this;
+    return new Promise(function(resolve, reject){
+      setTimeout(() => {
+        resolve({ tab : tab });
+      }, duration);
+    });
+  }
 
 	function waitUntilNoElement(tab, elementSelector, timeout){
 	  console.log("waiting for element to disappear: " + elementSelector);
@@ -276,14 +326,6 @@ var Actions = (function(){
 		});
   }
 
-  function wait(tab, duration){
-    return new Promise(function(resolve, reject){
-      setTimeout(function(){
-        resolve({ tab : tab });
-      }, duration);
-    });
-  }
-
   function fillForm(tab, fieldMap){
     var promise = new Promise(function(resolve, reject){
       resolve();
@@ -299,19 +341,11 @@ var Actions = (function(){
   var actionMap = {
     update : updateValue,
     click : clickElement,
-    navigate : navigateAndWaitUntilUrlChange
+    navigate : navigateAndWaitUntilUrlChange,
+    waitUntilVisible : waitUntilVisible,
+    waitUntilNotVisible : waitUntilNotVisible,
+    wait : wait
   };
-  function doActions(tab, actions){
-    var promise = Promise.resolve();
-
-    for(var i = 0; i < actions.length; i++){
-      promise = promise.then(function(){
-        return actionMap[actions[this].action].apply(tab, actions[this].args);
-      }.bind(i));
-    }
-    
-    return promise;
-  }
 
 	return {
 		getCurrentContextTab : getCurrentContextTab,
@@ -334,7 +368,6 @@ var Actions = (function(){
 		downloadInTab : downloadInTab,
 		wait : wait,
 		fillForm : fillForm,
-		doActions : doActions,
 		actionMap : actionMap
 	};
 })();
