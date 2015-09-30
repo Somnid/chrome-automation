@@ -68,6 +68,17 @@ var Util = (function(){
 	  
 	  return split;
 	}
+	
+	function transformToken(text, regex, replaceFunc){
+		var matches = text.match(regex);
+		if(!matches){
+		  return text;
+		}
+		for(var i = 0; i < matches.length; i++){
+			text = text.replace(matches[i], replaceFunc(matches[i]));
+		}
+		return text;
+	}
 
   return {
     stringToDataUri : stringToDataUri,
@@ -75,6 +86,7 @@ var Util = (function(){
     getParentDirectory : getParentDirectory,
     isAbsolutePath : isAbsolutePath,
     isWhitespace : isWhitespace,
-    splitWhitespace : splitWhitespace
+    splitWhitespace : splitWhitespace,
+    transformToken : transformToken
   };
 })();

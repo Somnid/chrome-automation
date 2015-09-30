@@ -18,14 +18,19 @@ var TestRunner = (function(){
   }
   
   function readFile(fileContents){
-    var actionParserService = ActionParserService.create({
-      actions : Actions
-    });
-    var actions = actionParserService.parse(fileContents);
-    return Actions.getCurrentContextTab()
-      .then(function(tab){
-          return chainSteps(actions, tab);
+    return new Promise((resolve, reject) => {
+      Generator.createAsync().then((generator)=>{
+        var actionParserService = ActionParserService.create({
+          actions : Actions,
+          generator : generator
+        });
+        var actions = actionParserService.parse(fileContents);
+        resolve(Actions.getCurrentContextTab()
+          .then(function(tab){
+              return chainSteps(actions, tab);
+          }));
       });
+    });
   }
   
   function error(exception){
