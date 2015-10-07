@@ -1,6 +1,8 @@
 Chrome Automation
 =================
 
+Chrome Automation seeks to create an acceptance and UI test runner in Chrome.  Useful especially for development where you might have to do things like repeatedly fill out forms to find bugs.
+
 Config File Example:
 
 ```
