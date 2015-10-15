@@ -22,8 +22,11 @@ var Generator = (function(){
     generator.lastName = getLastName.bind(generator);
     generator.fullName = getFullName.bind(generator);
     generator.phone = getPhone.bind(generator);
+    generator.country = getCountry.bind(generator);
     generator.state = getState.bind(generator);
     generator.city = getCity.bind(generator);
+    generator.gender = getGender.bind(generator);
+    generator.creditCard = getCreditCard.bind(generator);
   }
   
   function init(){
@@ -36,7 +39,8 @@ var Generator = (function(){
       fetch("/data/male-names.json").then(response => response.json().then(data => { this.data.maleNames = data; })),
       fetch("/data/last-names.json").then(response => response.json().then(data => { this.data.lastNames = data; })),
       fetch("/data/cities.json").then(response => response.json().then(data => { this.data.cities = data; })),
-      fetch("/data/states.json").then(response => response.json().then(data => { this.data.states = data; }))
+      fetch("/data/states.json").then(response => response.json().then(data => { this.data.states = data; })),
+      fetch("/data/countries.json").then(response => response.json().then(data => { this.data.countries = data; }))
     ]);
   }
   
@@ -62,6 +66,10 @@ var Generator = (function(){
   
   function getZip(){
     return getId(5);
+  }
+  
+  function getGender(){
+    return getBool() ? "male" : "female"; 
   }
   
   function getFirstName(gender){
@@ -105,6 +113,23 @@ var Generator = (function(){
   
   function getCity(){
     return this.data.cities[getInt(this.data.cities.length)];
+  }
+  
+  function getCreditCard(){
+    return "4111111111111111";
+  }
+  
+  function getCountry(){
+    return this.data.countries[getInt(this.data.countries.length)];
+  }
+  
+  function getProfile(){
+    var gender = this.gender();
+    var firstName = this.firstName(gender);
+    var lastName = this.lastName();
+    var country = this.country();
+    var state = this.state();
+    var city = this.city();
   }
   
   return {
