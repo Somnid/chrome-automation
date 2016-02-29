@@ -20,6 +20,20 @@ body {
   padding: 5px;
   box-sizing: border-box;
 }
+#edit {
+  display: none;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: top;
+}
+#edit textarea {
+  flex-basis: 100%;
+  flex-grow: 1;
+  height: 300px;
+}
+#edit button {
+  flex-grow: 1;
+}
 #error.show {
   display: block;
 }

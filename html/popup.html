@@ -8,20 +8,14 @@
 	</head>
 	<body>
 		<div id="tests"></div>
+		<button id="add-test">Add Test</button>
+		<div id="edit">
+		  <textarea id="test-code"></textarea>
+		  <button class="close">Close</button>
+		  <button class="save">Save</button>
+		</div>
 		<div id="error"></div>
-		<button id="run-all">Run All</button>
-		<template id="test-view-tmpl">
-		  <span class="title"></span>
-		</template>
-		<template id="test-group-view-tmpl">
-		  <div class="header">
-		    <span class="title"></span>
-		    <button class="run"></button>
-		  </div>
-		  <div class="container">
-		    <content></content>
-		  </div>
-		</template>
+		<script src="../js/libs/chromep.js"></script>
 		<script src="../js/libs/ajax.js"></script>
 		<script src="../js/libs/fetch.js"></script>
 		<script src="../js/libs/utilities.js"></script>
@@ -32,7 +26,8 @@
 		<script src="../js/services/action-parser-service.js"></script>
 		<script src="../js/web-components/test-view.js"></script>
 		<script src="../js/web-components/test-group-view.js"></script>
-		<script src="../js/test-ui-view.js"></script>
+		<script src="../js/views/edit-test-view.js"></script>
+		<script src="../js/views/test-ui-view.js"></script>
 		<script src="../js/test-runner.js"></script>
 		<script src="../js/popup.js"></script>
 	</body>
